@@ -4,7 +4,8 @@ const bodyParser = require("body-parser");
 
 require("dotenv").config();
 
-// const todoRoutes = require("./api/routes/todo");
+const tagRoutes = require("./api/routes/tag");
+const bookmarkRoutes = require("./api/routes/bookmark");
 
 const app = express();
 
@@ -38,7 +39,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use("/todo", todoRoutes);
+app.use("/tag", tagRoutes);
+app.use("/bookmark", bookmarkRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Route not found");
