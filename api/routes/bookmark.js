@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const Tag = require("../models/tag");
-const Bookmark = require("../models/Bookmark");
+const Bookmark = require("../models/bookmark");
 
 const router = express.Router();
 

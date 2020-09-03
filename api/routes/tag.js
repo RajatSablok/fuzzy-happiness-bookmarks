@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const Tag = require("../models/tag");
-const Bookmark = require("../models/Bookmark");
+const Bookmark = require("../models/bookmark");
 
 const router = express.Router();
 
@@ -110,6 +110,36 @@ router.get("/", async (req, res) => {
       res.status(200).json({
         message: "Tag retrieved",
         tag,
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
+        message: "Something went wrong",
+        error: err.toString(),
+      });
+    });
+});
+
+//Get all bookmarks of a tag
+router.get("/allBookmarks", async (req, res, next) => {
+  const { tagId } = req.query;
+  let arr = [];
+  await Bookmark.find()
+    .populate("tags", "title")
+    .select("-__v")
+    .exec()
+    .then(async (bookmarks) => {
+      for (i in bookmarks) {
+        for (j in bookmarks[i].tags) {
+          if (bookmarks[i].tags[j]._id == tagId) {
+            arr.push(bookmarks[i]);
+          }
+        }
+      }
+      res.status(200).json({
+        message: "List retrieved",
+        count: arr.length,
+        bookmarks: arr,
       });
     })
     .catch((err) => {
