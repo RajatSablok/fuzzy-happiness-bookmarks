@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
             });
           })
           .catch((err) => {
-            res.status(500).json({
+            res.status(400).json({
               message: "Something went wrong",
               error: err.toString(),
             });
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({
+      res.status(400).json({
         message: "Something went wrong",
         error: err.toString(),
       });
@@ -60,6 +60,7 @@ router.post("/", async (req, res) => {
 //Get all bookmarks
 router.get("/all", async (req, res) => {
   await Bookmark.find()
+    .select("-__v")
     .exec()
     .then(async (bookmarks) => {
       res.status(200).json({
@@ -69,7 +70,28 @@ router.get("/all", async (req, res) => {
       });
     })
     .catch((err) => {
-      res.status(500).json({
+      res.status(400).json({
+        message: "Something went wrong",
+        error: err.toString(),
+      });
+    });
+});
+
+//Get a particular bookmark by id
+router.get("/", async (req, res) => {
+  const { bookmarkId } = req.query;
+  await Bookmark.findById(bookmarkId)
+    .select("-__v")
+    .populate("tags", "title")
+    .exec()
+    .then(async (bookmark) => {
+      res.status(200).json({
+        message: "Bookmark retrieved",
+        bookmark,
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
         message: "Something went wrong",
         error: err.toString(),
       });
@@ -116,6 +138,23 @@ router.patch("/removeTag", async (req, res) => {
         message: "Tag removed from bookmark",
       });
     })
+    .catch((err) => {
+      res.status(400).json({
+        message: "Something went wrong",
+        error: err.toString(),
+      });
+    });
+});
+
+//Delete a bookmark
+router.delete("/", async (req, res) => {
+  const { bookmarkId } = req.body;
+  await Bookmark.deleteOne({ _id: bookmarkId })
+    .then(
+      res.status(200).json({
+        message: "Bookmark deleted",
+      })
+    )
     .catch((err) => {
       res.status(400).json({
         message: "Something went wrong",

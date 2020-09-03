@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
             });
           })
           .catch((err) => {
-            res.status(500).json({
+            res.status(400).json({
               message: "Something went wrong",
               error: err.toString(),
             });
@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).json({
+      res.status(400).json({
         message: "Something went wrong",
         error: err.toString(),
       });
@@ -54,16 +54,26 @@ router.post("/", async (req, res) => {
 });
 
 //Delete a tag
-router.delete("/:id", async (req, res) => {
-  await Tag.deleteOne({ _id: req.params.id })
-    .exec()
+router.delete("/", async (req, res) => {
+  const { tagId } = req.body;
+  await Bookmark.updateMany({ $pull: { tags: tagId } })
     .then(async (result) => {
-      res.status(200).json({
-        message: "Todo item deleted",
-      });
+      await Tag.deleteOne({ _id: req.params.id })
+        .exec()
+        .then(async (result) => {
+          res.status(200).json({
+            message: "Tag deleted",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json({
+            message: "Something went wrong",
+            error: err.toString(),
+          });
+        });
     })
     .catch((err) => {
-      res.status(500).json({
+      res.status(400).json({
         message: "Something went wrong",
         error: err.toString(),
       });
@@ -73,6 +83,7 @@ router.delete("/:id", async (req, res) => {
 //Get all tags
 router.get("/all", async (req, res) => {
   await Tag.find()
+    .select("-__v")
     .exec()
     .then(async (tags) => {
       res.status(200).json({
@@ -82,7 +93,27 @@ router.get("/all", async (req, res) => {
       });
     })
     .catch((err) => {
-      res.status(500).json({
+      res.status(400).json({
+        message: "Something went wrong",
+        error: err.toString(),
+      });
+    });
+});
+
+//Get a particular tag by id
+router.get("/", async (req, res) => {
+  const { tagId } = req.query;
+  await Tag.findById(tagId)
+    .select("-__v")
+    .exec()
+    .then(async (tag) => {
+      res.status(200).json({
+        message: "Tag retrieved",
+        tag,
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
         message: "Something went wrong",
         error: err.toString(),
       });
