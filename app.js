@@ -39,6 +39,13 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Please see the documentation for the list of available routes",
+    postmanDocsURL: "https://documenter.getpostman.com/view/12321331/TVCgxSS",
+  });
+});
+
 app.use("/tag", tagRoutes);
 app.use("/bookmark", bookmarkRoutes);
 

@@ -61,6 +61,7 @@ router.post("/", async (req, res) => {
 router.get("/all", async (req, res) => {
   await Bookmark.find()
     .select("-__v")
+    .populate("tags", "title")
     .exec()
     .then(async (bookmarks) => {
       res.status(200).json({
