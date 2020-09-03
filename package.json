@@ -1,0 +1,35 @@
+{
+  "name": "fuzzy-happiness-bookmarks",
+  "version": "1.0.0",
+  "description": "A basic bookmarking application with tags",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RajatSablok/fuzzy-happiness-bookmarks.git"
+  },
+  "keywords": [
+    "bookmark",
+    "bookmarks",
+    "tags"
+  ],
+  "author": "Rajat Sablok",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RajatSablok/fuzzy-happiness-bookmarks/issues"
+  },
+  "homepage": "https://github.com/RajatSablok/fuzzy-happiness-bookmarks#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.2",
+    "uuid": "^8.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
