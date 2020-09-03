@@ -12,6 +12,7 @@ router.post("/", async (req, res) => {
   const now = Date.now();
   let flag = 1;
   await Bookmark.find()
+    .populate("tags", "title")
     .exec()
     .then(async (bookmarks) => {
       for (i in bookmarks) {
@@ -69,6 +70,54 @@ router.get("/all", async (req, res) => {
     })
     .catch((err) => {
       res.status(500).json({
+        message: "Something went wrong",
+        error: err.toString(),
+      });
+    });
+});
+
+//Add a tag to a bookmark
+router.patch("/addTag", async (req, res) => {
+  const { bookmarkId, tagId } = req.body;
+  const now = Date.now();
+  if (bookmarkId && tagId) {
+    await Bookmark.updateOne(
+      { _id: bookmarkId },
+      { $push: { tags: tagId }, $set: { timeUpdated: now } }
+    )
+      .then(async (result) => {
+        res.status(200).json({
+          message: "Tag added to bookmark",
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          message: "Something went wrong",
+          error: err.toString(),
+        });
+      });
+  } else {
+    res.status(400).json({
+      message: "Data missing",
+    });
+  }
+});
+
+//Remove a tag to a bookmark
+router.patch("/removeTag", async (req, res) => {
+  const { bookmarkId, tagId } = req.body;
+  const now = Date.now();
+  await Bookmark.updateOne(
+    { _id: bookmarkId },
+    { $pull: { tags: tagId }, $set: { timeUpdated: now } }
+  )
+    .then(async (result) => {
+      res.status(200).json({
+        message: "Tag removed from bookmark",
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
         message: "Something went wrong",
         error: err.toString(),
       });

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const bookmarkSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  link: { type: String },
+  link: { type: String, required: true, unique: true },
   title: { type: String },
   timeCreated: { type: Number },
   timeUpdated: { type: Number },
